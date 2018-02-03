@@ -1,0 +1,140 @@
+﻿#container  {
+    height: 100%;
+    position: absolute;
+    width: 100%;
+    margin: 0;
+    padding: 0;
+}
+
+
+
+html, body  {
+    position: fixed;
+    margin: 0;
+    padding: 0;
+    height: 100%;
+    width: 100%;
+}
+
+header  {
+    position: relative;
+    top: 0;
+    height: 40px;
+    background-color: dodgerblue;
+    padding: 2px;
+}
+
+#content  {
+    display: flex;
+    position: absolute;
+    height: 92%;
+    width: 100%;
+    bottom: 40px;
+    top: 40px;
+    font-size: 120%;
+}
+
+main , aside {
+    padding: 16px;
+    float: left;
+    height: 100%;
+    overflow: auto;
+}
+
+aside  {
+    min-width: 250px;
+    width: 18%;    
+    background-color: white;
+}
+
+main {
+    min-width: 200px;
+    width: 78%;
+    background-color: white;
+}
+
+footer {
+    position: absolute;
+    width: 100%;
+    height: 40px;
+    background-color: dodgerblue;
+    bottom: 0;
+}
+
+.simpleProjectItem {
+    text-decoration: none;
+}
+
+.extendedView {
+    border: solid;
+    border-color: lightgrey;
+    border-style: ridge;
+    border-radius: 10px;
+    background-color: white;
+    margin: 5px;
+}
+
+.textDecorationOff a {
+    text-decoration: none;
+}
+
+.priority {
+    height: 100%;
+    width: 5px;
+    display: inline;
+    margin: 0 5px; 
+}
+
+.lowPriority {
+    background-color: azure;
+}
+
+.mediumPriority {
+    background-color: aqua;
+}
+
+.highPriority {
+    background-color: red;
+}
+
+.done {
+    text-decoration: line-through;
+}
+
+.validationError {
+    color: red;
+}
+
+.block {
+    display: block;
+}
+
+.inlineFlex {
+    display: inline-flex;
+}
+
+.inline {
+    display: block;
+}
+
+.createButtonsWrapper {
+    background-color: dodgerblue;
+}
+
+.defaultPadding {
+    padding: 4px;
+}
+
+.searchFormWrapper {
+    padding: 4px;
+    margin: 4px;
+}
+
+.optionButtonWrapper {
+    width: 100%;
+    text-align: center;
+}
+
+.buttonInline {
+    display: inline-block;
+}

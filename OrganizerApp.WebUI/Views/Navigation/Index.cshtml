@@ -1,0 +1,86 @@
+﻿@using OrganizerApp.DataCirculationHelpers
+@model IEnumerable<OrganizerApp.BllDtos.Projects.ProjectBase>
+@{
+    ViewBag.Title = "Index";
+}
+
+<div class="bootstrap-iso block">
+
+    @Html.ActionLink("Zadania na dzisiaj", "List", "Tasks",
+        new
+        {
+            timeType = "scheduled",
+            tasksType = TaskType.Active,
+            date = DateTime.Now.Date
+        },
+        new
+        {
+            id = "todayTasksLink",
+            @class = "btn btn-default btn-sm"
+        })
+
+    @Html.ActionLink("Lista najbliższych zadań", "List", "Tasks",
+        new
+        {
+            timeType = "next",
+            tasksType = TaskType.Active
+        },
+        new
+        {
+            id = "nextTasksLink",
+            @class = "btn btn-default btn-sm"
+        })
+
+    @Html.ActionLink("Zadania na konkretny dzień", "List", "Tasks",
+        new
+        {
+            timeType = "scheduled",
+            tasksType = TaskType.Active
+        },
+        new
+        {
+            id = "scheduledTasksLink",
+            @class = "btn btn-default btn-sm"
+        })
+
+
+    &nbsp;
+    &nbsp;
+    <h3> @Html.ActionLink("Wszystkie projekty", "List", "Projects", null, new { id = "allProjectsElem", @class = "btn btn-primary" }) </h3>
+    <hr />
+        <div class="panel panel-default">
+            <div class="panel-heading"> Aktywne projekty </div>
+            <div class="panel-body">
+                @if (Model == null || Model.Count() == 0)
+                {
+                    @:Nie ma aktywnych projektów
+                }
+                else
+                {
+                    foreach (var item in Model)
+                    {
+                        <p> @Html.Partial("_SimpleProjectView", item) </p>
+                    }
+                }
+            </div>
+        </div>
+    
+    <hr />
+
+    <div class="panel panel-default">
+        <div class="panel-heading"> Zadania </div>
+        <div class="panel-body">
+            @Html.ActionLink("Zakończone zadania", "List", "Tasks", new { tasksType = TaskType.Done }, new { @class = "btn btn-success btn-sm" })
+            @Html.ActionLink("Usunięte zadania", "List", "Tasks", new { tasksType = TaskType.Deleted }, new { @class = "btn btn-danger btn-sm" })
+        </div>
+    </div>
+
+    <div class="panel panel-default">
+        <div class="panel-heading"> Projekty </div>
+        <div class="panel-body">
+            @Html.ActionLink("Zakończone projekty", "List", "Projects", new { projectsType = ProjectType.Done }, new { @class = "btn btn-success btn-sm" })
+            @Html.ActionLink("Usunięte projekty", "List", "Projects", new { projectsType = ProjectType.Deleted }, new { @class = "btn btn-danger btn-sm" })
+        </div>
+    </div>
+
+</div>

@@ -1,0 +1,14 @@
+﻿@model OrganizerApp.BllDtos.Tasks.TaskBaseWithPriority
+
+
+    <div id="@Model.ID" class="extendedView textDecorationOff taskItem">
+        <div class="details">
+            <input type="hidden" name="id" value="@Model.ID" />
+            <input class="taskDoneCheckbox" type="checkbox" />
+
+            <div class="priority @Html.GetPriorityCssClassName(Model.Priority)">
+                &nbsp;
+            </div>
+            @Html.ActionLink(Model.Name, "Edit", "Tasks", new { id = Model.ID }, null)
+        </div>
+    </div>

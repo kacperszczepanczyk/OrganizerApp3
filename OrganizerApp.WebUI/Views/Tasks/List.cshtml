@@ -1,0 +1,21 @@
+﻿@using OrganizerApp.WebUI.Constants
+@model OrganizerApp.WebUI.Models.TasksListViewModel
+
+<h2> Zadania </h2>
+@if(Model.Tasks == null || Model.Tasks.Count() == 0)
+{
+    <p> Nie ma żadnych zadań </p>
+    return;
+}
+@foreach (var item in Model.Tasks)
+{
+    @Html.Partial("_ExtendedTaskView", item);
+}
+
+@section scripts{
+    <script>
+        var doneTaskApiAction = '@Model.DoneTaskActionUri';
+    </script>
+    <script src="@Url.Content("/MyScripts/AjaxHelpers.js")"></script>
+    <script src="@Url.Content("/MyScripts/TasksListScripts.js")"></script>
+}

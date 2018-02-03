@@ -1,0 +1,48 @@
+﻿<!DOCTYPE html>
+<html lang="pl-PL">
+    <head>
+        <meta charset="utf-8">
+        <title> OrganizerApp </title>
+        <link rel="stylesheet" type="text/css" href="@Url.Content("~/Content/Site.css")">
+        <link rel="stylesheet" type="text/css" href="@Url.Content("~/Content/bootstrap-iso.css")">
+        @*<link rel="java" type="text/css" href="@Url.Content("~/Content/bootstrap-iso.css")">*@
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+        <script type="text/javascript" src="@Url.Content("~/MyScripts/LayoutScripts.js")"></script>
+    </head>
+    <body>
+            <div id="container">
+                <header>
+                    <div class="inlineFlex">
+                        <div class="bootstrap-iso">
+                            <div class="createButtonsWrapper">
+                                @Html.ActionLink("Utwórz projekt", "Create", "Projects", null, new { @class = "btn btn-default" })
+                                @Html.ActionLink("Utwórz zadanie", "Create", "Tasks", null, new { @class = "btn btn-default" })
+                            </div>
+                        </div>
+                            <div class="searchFormWrapper inline">
+                                <form id="searchForm" method="get">
+                                    <input id="searchPhraseText" type="search" name="searchPhrase" placeholder="Wyszukaj po frazie" />
+                                    <label> <input name="searchType" type="radio" value="http://localhost:63758/Projects/Search" checked /> Przeszukaj projekty </label>
+                                    <label> <input name="searchType" type="radio" value="http://localhost:63758/Tasks/Search" /> Przeszukaj zadania </label>
+                                    <input type="submit" name="x" value="Szukaj" formmethod="post"/>
+                                </form>
+                            </div>
+                    </div>
+                </header>
+                <div id="content">
+                    <aside>
+                        @Html.Action("Index", "Navigation");
+                    </aside>
+                    <main>
+                        <div id="items">
+                            @RenderBody()
+                        </div>
+                    </main>
+                </div>
+                <footer>
+                    <p> OrganizerApp 2017 </p>
+                </footer>
+            </div>
+            @RenderSection("scripts", false)
+    </body>  
+</html>

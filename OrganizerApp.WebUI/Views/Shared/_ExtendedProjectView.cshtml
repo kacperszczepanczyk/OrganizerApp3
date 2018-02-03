@@ -1,0 +1,15 @@
+﻿@model OrganizerApp.BllDtos.Projects.ProjectBaseWithPriorityAndState
+
+
+<div id="@Model.ID" class="extendedView textDecorationOff projectItem @( (Model.State == "done") ? "done" : "" )">
+    <div class="details">
+        <input type="hidden" name="id" value="@Model.ID" />
+        <input class="projectDoneCheckbox" type="checkbox" @( (Model.State == "done") ? "checked disabled" : "" ) />
+
+        <div class="priority @Html.GetPriorityCssClassName(Model.Priority)">
+            &nbsp;
+        </div>
+        @Html.ActionLink(Model.Name , "Edit" , "Projects" , new { id = Model.ID } , new { id = "projectItemLink" })
+    </div>
+</div>
+
