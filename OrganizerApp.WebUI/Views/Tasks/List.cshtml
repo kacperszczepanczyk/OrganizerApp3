@@ -1,10 +1,11 @@
-﻿@using OrganizerApp.WebUI.Constants
+﻿@using OrganizerApp.WebUI.Infrastructure.Resources.Languages
+@using OrganizerApp.WebUI.Constants
 @model OrganizerApp.WebUI.Models.TasksListViewModel
 
-<h2> Zadania </h2>
+<h2> @LocalizedText.Tasks </h2>
 @if(Model.Tasks == null || Model.Tasks.Count() == 0)
 {
-    <p> Nie ma żadnych zadań </p>
+    <p> @LocalizedText.TasksNotFound </p>
     return;
 }
 @foreach (var item in Model.Tasks)

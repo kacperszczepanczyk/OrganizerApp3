@@ -1,6 +1,6 @@
 ﻿using FluentValidation;
 using OrganizerApp.BllDtos.Tasks;
-using OrganizerApp.ValidationCommunications;
+using OrganizerApp.ValidationCommunications.Task;
 
 namespace OrganizerApp.WebUI.Infrastructure.Validation
 {
@@ -10,28 +10,28 @@ namespace OrganizerApp.WebUI.Infrastructure.Validation
         {
             RuleFor(task => task.Name)
                 .NotEmpty()
-                .WithMessage(Task.NameRequired);
+                .WithMessage(LocalizedText.NameRequired);
 
             RuleFor(task => task.ID)
                 .GreaterThanOrEqualTo(0)
-                .WithMessage(Task.IdRequired);
+                .WithMessage(LocalizedText.IdRequired);
             
             RuleFor(task => task.Priority)
                 .NotEmpty()
-                .WithMessage(Task.PriorityRequired);
+                .WithMessage(LocalizedText.PriorityRequired);
 
             RuleFor(task => task.ExecutionTime)
                 .NotEmpty()
-                .WithMessage(Task.ExecutionTimeRequired);
+                .WithMessage(LocalizedText.ExecutionTimeRequired);
 
             RuleFor(task => task.StartTime)
                 .NotEmpty()
-                .When(task => task.ExecutionTime == /*GetDataHelpers.Helpers.ExecutionTime.Scheduled*/ "scheduled")
-                .WithMessage(Task.StartTimeRequired);
+                .When(task => task.ExecutionTime == "scheduled")
+                .WithMessage(LocalizedText.StartTimeRequired);
 
             RuleFor(task => task.State)
                 .NotEmpty()
-                .WithMessage(Task.StateRequired);
+                .WithMessage(LocalizedText.StateRequired);
         }
     }
 }

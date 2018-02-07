@@ -1,6 +1,6 @@
 ﻿using FluentValidation;
 using OrganizerApp.BllDtos.Tasks;
-using OrganizerApp.ValidationCommunications;
+using OrganizerApp.ValidationCommunications.Task;
 
 
 namespace OrganizerApp.WebApi.Infrastructure.Validation
@@ -11,32 +11,28 @@ namespace OrganizerApp.WebApi.Infrastructure.Validation
         {
             RuleFor(task => task.Name)
                 .NotEmpty()
-                .WithMessage(Task.NameRequired);
-
-            //RuleFor(task => task.ID)
-            //    .NotEmpty() //typ int nigdy nie będzie empty, a 0 jest prawidłową wartością
-            //    .WithMessage(Task.IdRequired);
+                .WithMessage(LocalizedText.NameRequired);
 
             RuleFor(task => task.ID)
                 .GreaterThanOrEqualTo(0)
-                .WithMessage(Task.IdRange);
+                .WithMessage(LocalizedText.IdRange);
 
             RuleFor(task => task.Priority)
                 .Matches("^low$|^medium$|^high$")
-                .WithMessage(Task.PriorityAcceptedValues);
+                .WithMessage(LocalizedText.PriorityAcceptedValues);
 
             RuleFor(task => task.ExecutionTime)
                 .Matches("^next$|^scheduled$|^someday$")
-                .WithMessage(Task.ExecutionTimeAcceptedValues);
+                .WithMessage(LocalizedText.ExecutionTimeAcceptedValues);
 
             RuleFor(task => task.StartTime)
                 .NotEmpty()
                 .When(task => task.ExecutionTime == "scheduled")
-                .WithMessage(Task.StartTimeRequired);
+                .WithMessage(LocalizedText.StartTimeRequired);
 
             RuleFor(task => task.State)
                 .Matches("^todo$|^done$|^deleted$")
-                .WithMessage(Task.StateAcceptedValues);
+                .WithMessage(LocalizedText.StateAcceptedValues);
         }
     }
 }

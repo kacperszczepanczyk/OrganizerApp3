@@ -1,4 +1,7 @@
-﻿<!DOCTYPE html>
+﻿@using OrganizerApp.WebUI.Infrastructure.Resources.Languages
+@using OrganizerApp.WebUI.Constants
+
+<!DOCTYPE html>
 <html lang="pl-PL">
     <head>
         <meta charset="utf-8">
@@ -15,16 +18,16 @@
                     <div class="inlineFlex">
                         <div class="bootstrap-iso">
                             <div class="createButtonsWrapper">
-                                @Html.ActionLink("Utwórz projekt", "Create", "Projects", null, new { @class = "btn btn-default" })
-                                @Html.ActionLink("Utwórz zadanie", "Create", "Tasks", null, new { @class = "btn btn-default" })
+                                @Html.ActionLink(LocalizedText.CreateProject , "Create", "Projects", null, new { @class = "btn btn-default" })
+                                @Html.ActionLink(LocalizedText.CreateTask , "Create", "Tasks", null, new { @class = "btn btn-default" })
                             </div>
                         </div>
                             <div class="searchFormWrapper inline">
                                 <form id="searchForm" method="get">
-                                    <input id="searchPhraseText" type="search" name="searchPhrase" placeholder="Wyszukaj po frazie" />
-                                    <label> <input name="searchType" type="radio" value="http://localhost:63758/Projects/Search" checked /> Przeszukaj projekty </label>
-                                    <label> <input name="searchType" type="radio" value="http://localhost:63758/Tasks/Search" /> Przeszukaj zadania </label>
-                                    <input type="submit" name="x" value="Szukaj" formmethod="post"/>
+                                    <input id="searchPhraseText" type="search" name="searchPhrase" placeholder="@LocalizedText.SearchByPhrase" />
+                                    <label> <input name="searchType" type="radio" value="@Url.Action("Search" , "Projects")" checked /> @LocalizedText.ProjectsSearch </label>
+                                    <label> <input name="searchType" type="radio" value="@Url.Action("Search" , "Tasks")" /> @LocalizedText.TasksSearch </label>
+                                    <input type="submit" name="x" value="@LocalizedText.Search" formmethod="post"/>
                                 </form>
                             </div>
                     </div>

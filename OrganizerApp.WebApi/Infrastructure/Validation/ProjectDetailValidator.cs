@@ -1,6 +1,6 @@
 ﻿using FluentValidation;
 using OrganizerApp.BllDtos.Projects;
-using OrganizerApp.ValidationCommunications;
+using OrganizerApp.ValidationCommunications.Project;
 
 namespace OrganizerApp.WebApi.Infrastructure.Validation
 {
@@ -10,28 +10,28 @@ namespace OrganizerApp.WebApi.Infrastructure.Validation
         {
             RuleFor(project => project.ID)
                 .GreaterThanOrEqualTo(0)
-                .WithMessage(Project.IdRange);
+                .WithMessage(LocalizedText.IdRange);
 
             RuleFor(project => project.Name)
                 .NotEmpty()
-                .WithMessage(Project.NameRequired);
+                .WithMessage(LocalizedText.NameRequired);
 
             RuleFor(project => project.Priority)
                 .Matches("^low$|^medium$|^high$")
-                .WithMessage(Project.PriorityAcceptedValues);
+                .WithMessage(LocalizedText.PriorityAcceptedValues);
 
             RuleFor(project => project.ExecutionTime)
                 .Matches("^next$|^scheduled$|^someday$")
-                .WithMessage(Project.ExecutionTimeAcceptedValues);
+                .WithMessage(LocalizedText.ExecutionTimeAcceptedValues);
 
             RuleFor(project => project.StartTime)
                 .NotEmpty()
                 .When(project => project.ExecutionTime == "scheduled")
-                .WithMessage(Project.StartTimeRequired);
+                .WithMessage(LocalizedText.StartTimeRequired);
 
             RuleFor(project => project.State)
                .Matches("^todo$|^done$|^deleted$")
-               .WithMessage(Project.StateAcceptedValues); 
+               .WithMessage(LocalizedText.StateAcceptedValues); 
 
         }
     }

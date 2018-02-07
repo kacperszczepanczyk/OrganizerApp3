@@ -1,4 +1,5 @@
-﻿using System;
+﻿using OrganizerApp.Helpers.ResourcesHelpers.Implementations;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Globalization;
@@ -11,7 +12,7 @@ namespace OrganizerApp.DalEntities.Helpers
 {
     [AttributeUsage(AttributeTargets.Property , AllowMultiple = false)]
     public class RequiredIfAttribute : ValidationAttribute
-    {
+    { 
         private string _propertyName;
         private object _expectedPropertyValue;
         public override bool RequiresValidationContext { get { return true; } }
@@ -19,10 +20,19 @@ namespace OrganizerApp.DalEntities.Helpers
 
         public RequiredIfAttribute(string propertyName , object expectedPropertyValue , string errorMessage ) : base(errorMessage)
         {
+            if(String.IsNullOrWhiteSpace(propertyName))
+            {
+                throw new ArgumentNullException("Właściwość PropertyName nie może być: nullem, składać się z białych znaków, być pustym stringiem .");
+            }
             _propertyName = propertyName;
             _expectedPropertyValue = expectedPropertyValue;
         }
 
+        public RequiredIfAttribute(string propertyName, object expectedPropertyValue, Type errorMessageResourceType , string errorMessageResourceName) : this(propertyName , expectedPropertyValue , null)
+        {
+            ErrorMessageResourceName = errorMessageResourceName;
+            ErrorMessageResourceType = errorMessageResourceType;
+        }
 
         public override string FormatErrorMessage(string name)
         {
@@ -53,7 +63,21 @@ namespace OrganizerApp.DalEntities.Helpers
             if (isPropertysEqual)
             {
                 if (value == null)
-                return new ValidationResult(ErrorMessage);
+                    if(ErrorMessageResourceType != null && !String.IsNullOrWhiteSpace(ErrorMessageResourceName))
+                    {
+                        string message = ResourceHelper.GetResourceValue(ErrorMessageResourceType , ErrorMessageResourceName);
+                        return new ValidationResult(message);
+                    }
+                    else if (!String.IsNullOrWhiteSpace(ErrorMessage))
+                    {
+                        return new ValidationResult(ErrorMessage);
+                    }
+                    else
+                    {
+                        throw new ArgumentException("Jeden z następujących zestawów właściwości musi spełniać następujące kryteria:\n" +
+                                                    " 1) ErrorMessageResourceType (różny od null), ErrorMessageResourceName (różny od null, nie składający się tylko z białych znaków, nie będący pustym stringiem )\n" +
+                                                    " 2) ErrorMessage (różny od null, nie składający się tylko z białych znaków, nie będący pustym stringiem )");
+                    }
             }
             return ValidationResult.Success;
         }

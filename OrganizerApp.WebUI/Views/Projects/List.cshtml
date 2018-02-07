@@ -1,9 +1,10 @@
-﻿@model OrganizerApp.WebUI.Models.ProjectsListViewModel
+﻿@using OrganizerApp.WebUI.Infrastructure.Resources.Languages
+@model OrganizerApp.WebUI.Models.ProjectsListViewModel
 
-<h2> Projekty </h2>
+<h2> @LocalizedText.Projects </h2>
 @if (Model.Projects == null || Model.Projects.Count() == 0)
 {
-    <p> Nie ma żadnych projektów </p>
+    <p> @LocalizedText.ProjectsNotFound </p>
     return;
 }
 @foreach (var item in Model.Projects)

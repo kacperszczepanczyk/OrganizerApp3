@@ -65,6 +65,10 @@
       <Project>{b24d2ebd-44ba-4cf9-bc7a-cb044dc0730b}</Project>
       <Name>OrganizerApp.DAL</Name>
     </ProjectReference>
+    <ProjectReference Include="..\OrganizerApp.Helpers\OrganizerApp.Helpers.csproj">
+      <Project>{f3dd59f6-d38b-43ef-a30d-b1b68d86daac}</Project>
+      <Name>OrganizerApp.Helpers</Name>
+    </ProjectReference>
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

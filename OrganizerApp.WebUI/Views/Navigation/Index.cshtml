@@ -1,4 +1,5 @@
 ﻿@using OrganizerApp.DataCirculationHelpers
+@using OrganizerApp.WebUI.Infrastructure.Resources.Languages
 @model IEnumerable<OrganizerApp.BllDtos.Projects.ProjectBase>
 @{
     ViewBag.Title = "Index";
@@ -6,7 +7,7 @@
 
 <div class="bootstrap-iso block">
 
-    @Html.ActionLink("Zadania na dzisiaj", "List", "Tasks",
+    @Html.ActionLink(LocalizedText.Today , "List", "Tasks",
         new
         {
             timeType = "scheduled",
@@ -19,7 +20,7 @@
             @class = "btn btn-default btn-sm"
         })
 
-    @Html.ActionLink("Lista najbliższych zadań", "List", "Tasks",
+    @Html.ActionLink(LocalizedText.Next, "List", "Tasks",
         new
         {
             timeType = "next",
@@ -31,7 +32,7 @@
             @class = "btn btn-default btn-sm"
         })
 
-    @Html.ActionLink("Zadania na konkretny dzień", "List", "Tasks",
+    @Html.ActionLink(LocalizedText.Scheduled, "List", "Tasks",
         new
         {
             timeType = "scheduled",
@@ -46,14 +47,14 @@
 
     &nbsp;
     &nbsp;
-    <h3> @Html.ActionLink("Wszystkie projekty", "List", "Projects", null, new { id = "allProjectsElem", @class = "btn btn-primary" }) </h3>
+    <h3> @Html.ActionLink(LocalizedText.AllProjects, "List", "Projects", null, new { id = "allProjectsElem", @class = "btn btn-primary" }) </h3>
     <hr />
         <div class="panel panel-default">
             <div class="panel-heading"> Aktywne projekty </div>
             <div class="panel-body">
                 @if (Model == null || Model.Count() == 0)
                 {
-                    @:Nie ma aktywnych projektów
+                    @LocalizedText.ActiveProjectsNotFound;
                 }
                 else
                 {
@@ -68,18 +69,18 @@
     <hr />
 
     <div class="panel panel-default">
-        <div class="panel-heading"> Zadania </div>
+        <div class="panel-heading"> @LocalizedText.Tasks </div>
         <div class="panel-body">
-            @Html.ActionLink("Zakończone zadania", "List", "Tasks", new { tasksType = TaskType.Done }, new { @class = "btn btn-success btn-sm" })
-            @Html.ActionLink("Usunięte zadania", "List", "Tasks", new { tasksType = TaskType.Deleted }, new { @class = "btn btn-danger btn-sm" })
+            @Html.ActionLink(LocalizedText.CompletedTasks , "List", "Tasks", new { tasksType = TaskType.Done }, new { @class = "btn btn-success btn-sm" })
+            @Html.ActionLink(LocalizedText.DeletedTasks , "List", "Tasks", new { tasksType = TaskType.Deleted }, new { @class = "btn btn-danger btn-sm" })
         </div>
     </div>
 
     <div class="panel panel-default">
-        <div class="panel-heading"> Projekty </div>
+        <div class="panel-heading"> @LocalizedText.Projects </div>
         <div class="panel-body">
-            @Html.ActionLink("Zakończone projekty", "List", "Projects", new { projectsType = ProjectType.Done }, new { @class = "btn btn-success btn-sm" })
-            @Html.ActionLink("Usunięte projekty", "List", "Projects", new { projectsType = ProjectType.Deleted }, new { @class = "btn btn-danger btn-sm" })
+            @Html.ActionLink(LocalizedText.CompletedProjects, "List", "Projects", new { projectsType = ProjectType.Done }, new { @class = "btn btn-success btn-sm" })
+            @Html.ActionLink(LocalizedText.DeletedProjects, "List", "Projects", new { projectsType = ProjectType.Deleted }, new { @class = "btn btn-danger btn-sm" })
         </div>
     </div>
 

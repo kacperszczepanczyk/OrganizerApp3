@@ -1,4 +1,6 @@
 ﻿using OrganizerApp.WebUI.Helpers.View.ContentGenerator.Interfaces;
+using OrganizerApp.WebUI.Infrastructure.Resources;
+using OrganizerApp.WebUI.Infrastructure.Resources.Languages;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -20,7 +22,7 @@ namespace OrganizerApp.WebUI.Helpers.View.ContentGenerator.Implementations
 
         public string GetHeaderText(int id, string name)
         {
-            return id == 0 ? "Tworzysz nowe zadanie: " : "Edytujesz zadanie: " + name;
+            return id == 0 ? LocalizedText.NewTaskCreating : LocalizedText.TaskEditing + name;
         }
 
         public string GetPriorityHtmlCheckedState(string priority, string expectedPriorityValue)

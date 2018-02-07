@@ -1,53 +1,45 @@
-﻿@model OrganizerApp.WebUI.Models.TaskEditViewModel
-@{
+﻿@using OrganizerApp.WebUI.Infrastructure.Resources.Languages
+@model OrganizerApp.WebUI.Models.TaskEditViewModel
 
-}
 
 @if(Model.Task == null)
 {
-    @:To zadanie nie istnieje.
+    @LocalizedText.TaskDoesntExist;
     return;
 }
 
 
 @using (Html.BeginForm("Edit", "Tasks", FormMethod.Post , new { id = "taskForm" }))
 {
-    @*<h2> @(Model.Task.ID == 0 ? "Tworzysz nowe zadanie" : "Edytujesz zadanie: " + Model.Task.Name) </h2>*@
     <h2> @Model.ContentGenerator.GetHeaderText(Model.Task.ID, Model.Task.Name) </h2>
     <fieldset>
-        <legend> <strong> Szczegóły zadania </strong> </legend>
+        <legend> <strong> @LocalizedText.TaskDetails </strong> </legend>
         <input name="id" type="hidden" value="@Model.Task.ID" />
         <input name="state" type="hidden" value="todo" />
         <fieldset id="taskNameArea">
-            <input name="name" type="text" value="@Model.Task.Name" placeholder="Nazwa zadania" />
+            <input name="name" type="text" value="@Model.Task.Name" placeholder="@LocalizedText.TaskName" />
             <div class="validationError">
                 @Html.ValidationMessageFor(model => model.Task.Name)
             </div>
         </fieldset>
         <fieldset>
-            <input name="description" type="text" value="@Model.Task.Description" placeholder="Notatka do zadania" />
+            <input name="description" type="text" value="@Model.Task.Description" placeholder="@LocalizedText.TaskDescription" />
         </fieldset>
         <fieldset id="taskPriorityArea">
-            @*<label> <input name="priority" type="radio" value="low" @(Model.Task.Priority != null ? Model.Task.Priority.Equals("low") ? "checked" : "" : "") /> Low </label>*@
-            <label> <input name="priority" type="radio" value="low" @Model.ContentGenerator.GetPriorityHtmlCheckedState(Model.Task.Priority , "low") /> Low </label>
-            @*<label> <input name="priority" type="radio" value="medium" @(Model.Task.Priority != null ? Model.Task.Priority.Equals("medium") ? "checked" : "" : "") /> Medium </label>*@
-            <label> <input name="priority" type="radio" value="medium" @Model.ContentGenerator.GetPriorityHtmlCheckedState(Model.Task.Priority , "medium") /> Medium </label>
-            @*<label> <input name="priority" type="radio" value="high" @(Model.Task.Priority != null ? Model.Task.Priority.Equals("high") ? "checked" : "" : "") /> High </label>*@
-            <label> <input name="priority" type="radio" value="high" @Model.ContentGenerator.GetPriorityHtmlCheckedState(Model.Task.Priority , "high") /> High </label>
+            <label> <input name="priority" type="radio" value="low" @Model.ContentGenerator.GetPriorityHtmlCheckedState(Model.Task.Priority , "low") /> @LocalizedText.Low </label>
+            <label> <input name="priority" type="radio" value="medium" @Model.ContentGenerator.GetPriorityHtmlCheckedState(Model.Task.Priority, "medium") /> @LocalizedText.Medium </label>
+            <label> <input name="priority" type="radio" value="high" @Model.ContentGenerator.GetPriorityHtmlCheckedState(Model.Task.Priority, "high") /> @LocalizedText.High </label>
             <div class="validationError">
                 @Html.ValidationMessageFor(model => model.Task.Priority)
             </div>
         </fieldset>
         <fieldset id="taskExecutionTimeArea">
-            <label for="executionTime"> Czas wykonania </label>
+            <label for="executionTime"> @LocalizedText.ExecutionTime </label>
             <select id="executionTime" name="executionTime">
                 <option value="">  </option>
-                @*<option value="next" @(Model.Task.ExecutionTime != null ? Model.Task.ExecutionTime.Equals("next") ? "selected" : "" : "")> Next </option>*@
-                <option value="next" @Model.ContentGenerator.GetExecutionTimeHtmlSelectedState(Model.Task.ExecutionTime , "next")> Next </option>
-                @*<option value="scheduled" @(Model.Task.ExecutionTime != null ? Model.Task.ExecutionTime.Equals("scheduled") ? "selected" : "" : "")> Scheduled </option>*@
-                <option value="scheduled" @Model.ContentGenerator.GetExecutionTimeHtmlSelectedState(Model.Task.ExecutionTime , "scheduled")> Scheduled </option>
-                @*<option value="someday" @(Model.Task.ExecutionTime != null ? Model.Task.ExecutionTime.Equals("someday") ? "selected" : "" : "")> Someday </option>*@
-                <option value="someday" @Model.ContentGenerator.GetExecutionTimeHtmlSelectedState(Model.Task.ExecutionTime , "someday")> Someday </option>
+                <option value="next" @Model.ContentGenerator.GetExecutionTimeHtmlSelectedState(Model.Task.ExecutionTime , "next")> @LocalizedText.Next </option>
+                <option value="scheduled" @Model.ContentGenerator.GetExecutionTimeHtmlSelectedState(Model.Task.ExecutionTime, "scheduled")> @LocalizedText.Scheduled </option>
+                <option value="someday" @Model.ContentGenerator.GetExecutionTimeHtmlSelectedState(Model.Task.ExecutionTime, "someday")> @LocalizedText.SomedayMaybe </option>
             </select>
             <div class="validationError">
                 @Html.ValidationMessageFor(model => model.Task.ExecutionTime)
@@ -63,7 +55,7 @@
         </div>
 
         <fieldset>
-            <label for="projectName"> Projekt: </label>
+            <label for="projectName"> @LocalizedText.Project </label>
             <select id="projectName" name="projectID">
                 <option id="defaultProjectName" value="@Model.ContentGenerator.GetProjectHtmlValue(Model.Task.ProjectID)"> @Model.ContentGenerator.GetProjectName(Model.Task.ProjectID , Model.Task.Project?.Name) </option>
                 <optgroup label="Aktywne projekty">
@@ -75,7 +67,7 @@
             </select>
         </fieldset>
         <div class="bootstrap-iso inline">
-            <input id="submitTaskForm" class="btn-success" type="submit" formmethod="post" value="Zapisz" />
+            <input id="submitTaskForm" class="btn-success" type="submit" formmethod="post" value="@LocalizedText.Save" />
         </div>
     </fieldset>
 }
@@ -83,10 +75,10 @@
 
 @section scripts {
     <script>
-        var nameRequiredMessage = '@OrganizerApp.ValidationCommunications.Task.NameRequired';
-        var priorityRequiredMessage = '@OrganizerApp.ValidationCommunications.Task.PriorityRequired';
-        var executionTimeRequiredMessage = '@OrganizerApp.ValidationCommunications.Task.ExecutionTimeRequired';
-        var startTimeRequiredMessage = '@Html.Raw(OrganizerApp.ValidationCommunications.Task.StartTimeRequired)';
+        var nameRequiredMessage = '@OrganizerApp.ValidationCommunications.Task.LocalizedText.NameRequired';
+        var priorityRequiredMessage = '@OrganizerApp.ValidationCommunications.Task.LocalizedText.PriorityRequired';
+        var executionTimeRequiredMessage = '@OrganizerApp.ValidationCommunications.Task.LocalizedText.ExecutionTimeRequired';
+        var startTimeRequiredMessage = '@Html.Raw(OrganizerApp.ValidationCommunications.Task.LocalizedText.StartTimeRequired)';
     </script>
     <script type="text/javascript" src="@Url.Content("/MyScripts/AjaxHelpers.js")" ></script>
     <script type="text/javascript" src="@Url.Content("/MyScripts/TaskFormScripts.js")"></script> 

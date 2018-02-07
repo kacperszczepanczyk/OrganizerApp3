@@ -57,6 +57,10 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\OrganizerApp.Helpers\OrganizerApp.Helpers.csproj">
+      <Project>{f3dd59f6-d38b-43ef-a30d-b1b68d86daac}</Project>
+      <Name>OrganizerApp.Helpers</Name>
+    </ProjectReference>
     <ProjectReference Include="..\OrganizerApp.ValidationCommunications\OrganizerApp.ValidationCommunications.csproj">
       <Project>{6d719295-6f21-4e71-8252-fc62ebabc5dd}</Project>
       <Name>OrganizerApp.ValidationCommunications</Name>
