@@ -4,7 +4,7 @@ using OrganizerApp.DalEntities.Entities;
 
 namespace OrganizerApp.BLL.Interfaces
 {
-    public interface ITasksBusinessDataManager : IGetActions <TaskBase , TaskGetFilteredArgs> , ITaskSetActions
+    public interface ITasksBusinessDataManager : ITaskGetActions <TaskBase , TaskGetFilteredArgs> , ITaskSetActions
     {
         
     }

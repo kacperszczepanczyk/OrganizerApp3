@@ -4,7 +4,7 @@ using OrganizerApp.DalEntities.Entities;
 
 namespace OrganizerApp.BLL.Interfaces
 {
-    public interface IProjectsBusinessDataManager : IGetActions<ProjectBase , ProjectGetFilteredArgs> , IProjectSetActions
+    public interface IProjectsBusinessDataManager : IProjectGetActions<ProjectBase , ProjectGetFilteredArgs> , IProjectSetActions
     {
         
     }

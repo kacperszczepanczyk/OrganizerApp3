@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace OrganizerApp.Dalnterfaces
 {
-    public interface IRepository <T , V , Z> : IGetActions<T , V> , ISetDataActions<Z> 
+    public interface IRepository <T , V , Z> : IGetActions<T , V> , ISetDataActions<Z>
     {
     }
 }
