@@ -58,8 +58,9 @@
     <Compile Include="Helpers\FilterData\ProjectGetFilteredArgs.cs" />
     <Compile Include="Helpers\FilterData\TaskGetFilteredArgs.cs" />
     <Compile Include="Infrastructure\AutoMapperBllConfig.cs" />
-    <Compile Include="Interfaces\IGetActions.cs" />
+    <Compile Include="Interfaces\IProjectGetActions.cs" />
     <Compile Include="Interfaces\IProjectSetActions.cs" />
+    <Compile Include="Interfaces\ITaskGetActions.cs" />
     <Compile Include="Interfaces\ITaskSetActions.cs" />
     <Compile Include="Interfaces\IProjectsBusinessDataManager.cs" />
     <Compile Include="Interfaces\ITasksBusinessDataManager.cs" />

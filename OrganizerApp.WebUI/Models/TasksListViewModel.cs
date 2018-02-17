@@ -1,4 +1,5 @@
 ﻿using OrganizerApp.BllDtos.Tasks;
+using OrganizerApp.WebUI.Helpers.Api.OrganizerApp;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -10,5 +11,11 @@ namespace OrganizerApp.WebUI.Models
     {
         public IEnumerable<TaskBaseWithPriority> Tasks { get; set; }
         public string DoneTaskActionUri { get; set; }
+
+
+        public TasksListViewModel()
+        {
+            DoneTaskActionUri = ApiUriBuilder.DoneTaskUri.ToString();
+        }
     }
 }

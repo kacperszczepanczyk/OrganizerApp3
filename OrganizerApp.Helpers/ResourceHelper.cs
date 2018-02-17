@@ -5,9 +5,9 @@ using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace OrganizerApp.Helpers.ResourcesHelpers.Implementations
+namespace OrganizerApp.Helpers
 {
-    public static class ResourceHelper
+    public static class ResourceHelpers
     {
         public static string GetResourceValue(Type resourceType, string resourceName)
         {

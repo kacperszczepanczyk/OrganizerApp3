@@ -231,12 +231,21 @@
   <ItemGroup>
     <Compile Include="App_Start\NinjectWebCommon.cs" />
     <Compile Include="App_Start\RouteConfig.cs" />
-    <Compile Include="Constants\ApiUriInfo.cs" />
+    <Compile Include="Helpers\Api\ApiRequestHandler.cs" />
+    <Compile Include="Helpers\Api\IApiRequestHandler.cs" />
+    <Compile Include="Helpers\Api\OrganizerApp\ApiUriBuilder.cs" />
     <Compile Include="Controllers\ErrorsController.cs" />
     <Compile Include="Controllers\NavigationController.cs" />
     <Compile Include="Controllers\ProjectsController.cs" />
     <Compile Include="Controllers\TasksController.cs" />
+    <Compile Include="Helpers\Api\OrganizerApp\ApiUriInfo.cs" />
+    <Compile Include="Helpers\Api\OrganizerApp\Projects\IOrganizerAppProjectApiRequestHandler.cs" />
+    <Compile Include="Helpers\Api\OrganizerApp\Tasks\IOrganizerAppTaskApiRequestHandler.cs" />
+    <Compile Include="Helpers\Api\OrganizerApp\Projects\OrganizerAppProjectApiRequestHandler.cs" />
+    <Compile Include="Helpers\Api\OrganizerApp\Tasks\OrganizerAppTaskApiRequestHandler.cs" />
     <Compile Include="Helpers\HtmlHelperExtensions.cs" />
+    <Compile Include="Helpers\Json\IJsonSerializer.cs" />
+    <Compile Include="Helpers\Json\NewtonsoftJsonSerializer.cs" />
     <Compile Include="Helpers\View\ContentGenerator\Implementations\ProjectEditContentGenerator.cs" />
     <Compile Include="Helpers\View\ContentGenerator\Implementations\TaskEditContentGenerator.cs" />
     <Compile Include="Helpers\View\ContentGenerator\Interfaces\IContentGenerator.cs" />
@@ -295,6 +304,7 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
+    <Folder Include="Constants\" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\OrganizerApp.BllDtos\OrganizerApp.BllDtos.csproj">
@@ -304,6 +314,10 @@
     <ProjectReference Include="..\OrganizerApp.DataCirculationHelpers\OrganizerApp.DataCirculationHelpers.csproj">
       <Project>{a466395a-f9aa-4e0b-b2f4-d67e5fc3c48d}</Project>
       <Name>OrganizerApp.DataCirculationHelpers</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\OrganizerApp.Helpers\OrganizerApp.Helpers.csproj">
+      <Project>{F3DD59F6-D38B-43EF-A30D-B1B68D86DAAC}</Project>
+      <Name>OrganizerApp.Helpers</Name>
     </ProjectReference>
     <ProjectReference Include="..\OrganizerApp.ValidationCommunications\OrganizerApp.ValidationCommunications.csproj">
       <Project>{6d719295-6f21-4e71-8252-fc62ebabc5dd}</Project>

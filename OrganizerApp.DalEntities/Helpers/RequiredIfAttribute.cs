@@ -1,4 +1,5 @@
-﻿using OrganizerApp.Helpers.ResourcesHelpers.Implementations;
+﻿
+using OrganizerApp.Helpers;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
@@ -65,7 +66,7 @@ namespace OrganizerApp.DalEntities.Helpers
                 if (value == null)
                     if(ErrorMessageResourceType != null && !String.IsNullOrWhiteSpace(ErrorMessageResourceName))
                     {
-                        string message = ResourceHelper.GetResourceValue(ErrorMessageResourceType , ErrorMessageResourceName);
+                        string message = ResourceHelpers.GetResourceValue(ErrorMessageResourceType , ErrorMessageResourceName);
                         return new ValidationResult(message);
                     }
                     else if (!String.IsNullOrWhiteSpace(ErrorMessage))

@@ -1,4 +1,5 @@
 ﻿using OrganizerApp.BllDtos.Projects;
+using OrganizerApp.WebUI.Helpers.Api.OrganizerApp;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -10,5 +11,10 @@ namespace OrganizerApp.WebUI.Models
     {
         public IEnumerable<ProjectBaseWithPriorityAndState> Projects { get; set; }
         public string DoneProjectActionUri { get; set; }
+
+        public ProjectsListViewModel()
+        {
+            DoneProjectActionUri = ApiUriBuilder.DoneProjectUri.ToString();
+        }
     }
 }

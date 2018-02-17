@@ -1,5 +1,6 @@
 ﻿using OrganizerApp.BllDtos.Projects;
 using OrganizerApp.WebUI.Helpers;
+using OrganizerApp.WebUI.Helpers.View.ContentGenerator.Implementations;
 using OrganizerApp.WebUI.Helpers.View.ContentGenerator.Interfaces;
 using System;
 using System.Collections.Generic;
@@ -12,5 +13,11 @@ namespace OrganizerApp.WebUI.Models
     {
         public ProjectDetail Project { get; set; }
         public IProjectContentGenerator ContentGenerator { get; set; }
+
+
+        public ProjectEditViewModel()
+        {
+            ContentGenerator = new ProjectEditContentGenerator();
+        }
     }
 }

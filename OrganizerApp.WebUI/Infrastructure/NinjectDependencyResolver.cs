@@ -1,5 +1,8 @@
 ﻿using Ninject;
-using OrganizerApp.WebUI.Constants;
+using OrganizerApp.WebUI.Helpers.Api;
+using OrganizerApp.WebUI.Helpers.Api.OrganizerApp;
+using OrganizerApp.WebUI.Helpers.Api.OrganizerApp.Projects;
+using OrganizerApp.WebUI.Helpers.Api.OrganizerApp.Tasks;
 using RestSharp;
 using System;
 using System.Collections.Generic;
@@ -29,9 +32,13 @@ namespace OrganizerApp.WebUI.Infrastructure
 
         private void AddBindings()
         {
-            _kernel.Bind<RestClient>()
-                   .ToSelf()
-                   .WithConstructorArgument(ApiUriInfo.Domain); 
+            _kernel.Bind<IOrganizerAppProjectApiRequestHandler>()
+                    .To<OrganizerAppProjectApiRequestHandler>();
+            _kernel.Bind<IOrganizerAppTaskApiRequestHandler>()
+                    .To<OrganizerAppTaskApiRequestHandler>();
+            _kernel.Bind<IApiRequestHandler>()
+                    .To<ApiRequestHandler>()
+                    .WithConstructorArgument("baseUri", ApiUriInfo.Domain.ToString());
         }
     }
 }

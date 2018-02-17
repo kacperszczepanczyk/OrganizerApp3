@@ -52,7 +52,6 @@
   <ItemGroup>
     <Compile Include="Entities\Project.cs" />
     <Compile Include="Entities\Task.cs" />
-    <Compile Include="Entities\User.cs" />
     <Compile Include="Helpers\RequiredIfAttribute.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

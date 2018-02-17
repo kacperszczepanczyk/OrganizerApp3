@@ -1,10 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Web;
 
-namespace OrganizerApp.WebUI.Constants
+namespace OrganizerApp.WebUI.Helpers.Api.OrganizerApp
 {
     public static class ApiUriInfo
     {
@@ -33,6 +32,6 @@ namespace OrganizerApp.WebUI.Constants
             public const string GetProjects = "api/projects/getFiltered";
             public const string GetProjectById = "api/projects/getById";
             public const string SaveProject = "api/projects/save";
-        }   
+        }
     }
 }
