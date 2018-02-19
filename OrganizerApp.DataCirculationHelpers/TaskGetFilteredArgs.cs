@@ -5,7 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace OrganizerApp.BLL.Helpers.FilterData
+namespace OrganizerApp.DataCirculationHelpers
 {
     public class TaskGetFilteredArgs
     {

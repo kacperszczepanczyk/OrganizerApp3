@@ -8,12 +8,14 @@ using System.Data.Entity.Validation;
 using System.Data.Entity.Core;
 using OrganizerApp.DAL.Interfaces;
 using OrganizerApp.DalEntities.Entities;
-using OrganizerApp.Dalnterfaces;
-using System.Data.SqlClient;
+using OrganizerApp.Helpers;
+using OrganizerApp.DalInterfaces;
+using OrganizerApp.DalInterfaces.Project;
+using OrganizerApp.DataCirculationHelpers;
 
 namespace OrganizerApp.DAL.Repositorys
 {
-    public class ProjectsRepository : IRepository<IQueryable<Project> , IQueryable<Project>, Project>
+    public class ProjectsRepository : IProjectsRepository
     {
         private readonly AbstractDbContext _dbContext;
 
@@ -24,32 +26,77 @@ namespace OrganizerApp.DAL.Repositorys
         }
 
 
-        public IQueryable<Project> GetById(int id)
+        public Project GetById(int id)
         {
             try
             {
                 return _dbContext.Projects
                                  .Where(x => x.ID == id)
-                                 .Include(x => x.ProjectTasks);
+                                 .Include(x => x.ProjectTasks)
+                                 .FirstOrDefault();
             }
-            catch (SqlException)
+            finally
             {
-                throw;
+                _dbContext.Database.Connection.Close();
             }
         }
 
-        public IQueryable<Project> GetAll()
+        public IEnumerable<Project> GetFiltered(ProjectGetFilteredArgs arguments)
         {
+            IQueryable<Project> projectsQuery = _dbContext.Projects.Include(x => x.ProjectTasks);
+
+            switch (arguments.ProjectsType)
+            {
+                case ProjectType.Done:
+                    {
+                        projectsQuery = projectsQuery.Where(x => x.State == "done");
+                        break;
+                    }
+                case ProjectType.Deleted:
+                    {
+                        projectsQuery = projectsQuery.Where(x => x.State == "deleted");
+                        break;
+                    }
+                case ProjectType.Active:
+                    {
+                        projectsQuery = projectsQuery.Where(x => x.State == "todo")
+                                           .Where(x => x.ExecutionTime != "someday");
+                        break;
+                    }
+                case ProjectType.Disactive:
+                    {
+                        projectsQuery = projectsQuery.Where(x => x.ExecutionTime == "someday")
+                                           .Where(x => x.State != "todo");
+                        break;
+                    }
+                default:
+                    {
+                        if (arguments.ProjectsType != ProjectType.All)
+                        {
+                            throw new ArgumentException("Argument projectsType przyjął nieprawidłową wartość (wartość po której nie mogę przefiltrować danych)");
+                        }
+                        break;
+                    }
+            }
+
+
+            if (arguments.SearchPhrase != null)
+            {
+                projectsQuery = projectsQuery.Where(x =>
+                    x.Name.Contains(arguments.SearchPhrase) ||
+                    x.Description.Contains(arguments.SearchPhrase)
+                );
+            }
+
+
             try
             {
-                return _dbContext.Projects
-                                 .Include(x => x.ProjectTasks);
-            } 
-            catch (SqlException)
-            {
-                throw;
+                return projectsQuery.ToList();
             }
-            
+            finally
+            {
+                _dbContext.Database.Connection.Close();
+            }
         }
 
         public void Remove(int id)
@@ -65,34 +112,6 @@ namespace OrganizerApp.DAL.Repositorys
             {
                 _dbContext.SaveChanges();
             }
-            catch (DbUpdateException)
-            {
-                throw;
-            }
-            catch (SqlException)
-            {
-                throw;
-            }
-            catch (UpdateException)
-            {
-                throw;
-            }
-            catch (DbEntityValidationException)
-            {
-                throw;
-            }
-            catch (NotSupportedException)
-            {
-                throw;
-            }
-            catch (ObjectDisposedException)
-            {
-                throw;
-            }
-            catch (InvalidOperationException)
-            {
-                throw;
-            }
             finally
             {
                 _dbContext.Database.Connection.Close();
@@ -105,61 +124,27 @@ namespace OrganizerApp.DAL.Repositorys
             {
                 throw new ArgumentNullException("Wartość encji musi być różna od null");
             }
+
             if (entity.ID == 0)
             {
                 _dbContext.Projects.Add(entity);
             }
             else if (entity.ID < 0)
             {
-                throw new ArgumentOutOfRangeException("ID obiektu nie może być ujemne. Podane ID: " + entity.ID);
+                throw new ValidationException("ID obiektu nie może być ujemne. Podane ID: " + entity.ID);
             }
             else
             {
-                if (_dbContext.Projects.Any(x => x.ID == entity.ID))
+                if (!_dbContext.Projects.Any(x => x.ID == entity.ID))
                 {
-                    Update(entity, modifiedPropertyNames);
+                    throw new ValidationException("Próbujesz zaktualizować rekord, który nie istnieje. Nie znaleziono istniejącego rekordu o ID: " + entity.ID);
                 }
-                else
-                {
-                    throw new KeyNotFoundException("Próbujesz zaktualizować rekord, który nie istnieje. Nie znaleziono istniejącego rekordu o ID: " + entity.ID);
-                }
+                Update(entity, modifiedPropertyNames);
             }
 
             try
             {
                 _dbContext.SaveChanges();
-            }
-            catch (DbUpdateConcurrencyException)
-            {
-                throw;
-            }
-            catch (DbUpdateException)
-            {
-                throw;
-            }
-            catch (SqlException)
-            {
-                throw;
-            }
-            catch (UpdateException)
-            {
-                throw;
-            }
-            catch (DbEntityValidationException)
-            {
-                throw;
-            }
-            catch (NotSupportedException)
-            {
-                throw;
-            }
-            catch (ObjectDisposedException)
-            {
-                throw;
-            }
-            catch (InvalidOperationException)
-            {
-                throw;
             }
             finally
             {

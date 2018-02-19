@@ -5,7 +5,6 @@ using System.Web.Http.Cors;
 using OrganizerApp.BLL.Interfaces;
 using OrganizerApp.BllDtos.Tasks;
 using FluentValidation;
-using OrganizerApp.BLL.Helpers.FilterData;
 using OrganizerApp.DataCirculationHelpers;
 
 namespace OrganizerApp.WebApi.Controllers

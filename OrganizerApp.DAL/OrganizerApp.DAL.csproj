@@ -72,6 +72,14 @@
       <Project>{80b8cf79-6e5e-4bb2-b494-a12b9f871912}</Project>
       <Name>OrganizerApp.DalInterfaces</Name>
     </ProjectReference>
+    <ProjectReference Include="..\OrganizerApp.DataCirculationHelpers\OrganizerApp.DataCirculationHelpers.csproj">
+      <Project>{A466395A-F9AA-4E0B-B2F4-D67E5FC3C48D}</Project>
+      <Name>OrganizerApp.DataCirculationHelpers</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\OrganizerApp.Helpers\OrganizerApp.Helpers.csproj">
+      <Project>{f3dd59f6-d38b-43ef-a30d-b1b68d86daac}</Project>
+      <Name>OrganizerApp.Helpers</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

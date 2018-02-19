@@ -6,14 +6,15 @@ using System.Text;
 using System.Web;
 using System.Web.Http.ExceptionHandling;
 using FluentValidation;
+using OrganizerApp.WebApi.Resources.Languages;
 
 namespace OrganizerApp.WebApi.Infrastructure.Exceptions.ExceptionHandlers.Implementations
 {
-    public class ValidationExceptionHandler : IConcreteExceptionHandler
+    public class FluentValidationExceptionHandler : IConcreteExceptionHandler
     {
         private ExceptionHandlerContext _exContext;
 
-        public ValidationExceptionHandler(ExceptionHandlerContext exContext)
+        public FluentValidationExceptionHandler(ExceptionHandlerContext exContext)
         {
             _exContext = exContext;
         }
@@ -21,7 +22,7 @@ namespace OrganizerApp.WebApi.Infrastructure.Exceptions.ExceptionHandlers.Implem
 
         public void Handle()
         {
-            string customExcMsg = "Validation failed for one or more entities. Info below: \n";
+            string customExcMsg = LocalizedText.ValidationFailedMainCommunicate;
             StringBuilder valExcInfo = new StringBuilder(customExcMsg);
             var ex = _exContext.Exception as ValidationException;
             foreach (var error in ex.Errors)

@@ -3,7 +3,9 @@ using OrganizerApp.DAL.Contexts;
 using OrganizerApp.DAL.Interfaces;
 using OrganizerApp.DAL.Repositorys;
 using OrganizerApp.DalEntities.Entities;
-using OrganizerApp.Dalnterfaces;
+using OrganizerApp.DalInterfaces;
+using OrganizerApp.DalInterfaces.Project;
+using OrganizerApp.DalInterfaces.Task;
 using System.Linq;
 
 namespace DependencyComposer
@@ -12,8 +14,8 @@ namespace DependencyComposer
     {
         public void Bind(IKernel kernel)
         {
-            kernel.Bind<IRepository<IQueryable<Project>, IQueryable<Project> , Project>>().To<ProjectsRepository>();
-            kernel.Bind<IRepository<IQueryable<Task>, IQueryable<Task> , Task>>().To<TasksRepository>();
+            kernel.Bind<ITasksRepository>().To<TasksRepository>();
+            kernel.Bind<IProjectsRepository>().To<ProjectsRepository>();
             kernel.Bind<AbstractDbContext>().To<StandardDbContext>();
         }
     }

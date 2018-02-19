@@ -1,28 +1,22 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Data.Entity.Infrastructure;
-using System.Data.Entity.Validation;
-using System.Data.Entity.Core;
-using System.Data.SqlClient;
-using AutoMapper.QueryableExtensions;
 using AutoMapper;
-using OrganizerApp.Dalnterfaces;
 using OrganizerApp.BllDtos.Projects;
 using OrganizerApp.DalEntities.Entities;
 using OrganizerApp.BLL.Interfaces;
-using OrganizerApp.BLL.Helpers;
-using OrganizerApp.BLL.Helpers.FilterData;
 using OrganizerApp.DataCirculationHelpers;
+using OrganizerApp.DalInterfaces;
+using OrganizerApp.DalInterfaces.Project;
 
 namespace OrganizerApp.BLL.BusinessDataManagers
 {
     public class ProjectsBusinessDataManager : IProjectsBusinessDataManager
     {
-        private readonly IRepository<IQueryable<Project>, IQueryable<Project> , Project> _projectsRepository;
+        private readonly IProjectsRepository _projectsRepository;
 
 
-        public ProjectsBusinessDataManager(IRepository<IQueryable<Project>, IQueryable<Project>, Project> projectsRepository)
+        public ProjectsBusinessDataManager(IProjectsRepository projectsRepository)
         {
             _projectsRepository = projectsRepository;
         }
@@ -37,50 +31,8 @@ namespace OrganizerApp.BLL.BusinessDataManagers
                 StartTime = null
             };
 
-            try
-            {
-                _projectsRepository.Save(project, x => nameof(x.ExecutionTime) , x => nameof(x.StartTime));
-            }
-            catch (ArgumentOutOfRangeException)
-            {
-                throw;
-            }
-            catch (KeyNotFoundException)
-            {
-                throw;
-            }
-            catch (DbUpdateConcurrencyException)
-            {
-                throw;
-            }
-            catch (DbUpdateException)
-            {
-                throw;
-            }
-            catch (SqlException)
-            {
-                throw;
-            }
-            catch (UpdateException)
-            {
-                throw;
-            }
-            catch (DbEntityValidationException)
-            {
-                throw;
-            }
-            catch (NotSupportedException)
-            {
-                throw;
-            }
-            catch (ObjectDisposedException)
-            {
-                throw;
-            }
-            catch (InvalidOperationException)
-            {
-                throw;
-            }
+            _projectsRepository.Save(project, x => nameof(x.ExecutionTime) , x => nameof(x.StartTime));
+           
         }
 
         public void Done(int id)
@@ -91,77 +43,15 @@ namespace OrganizerApp.BLL.BusinessDataManagers
                 State = "done"
             };
 
-            try
-            {
-                _projectsRepository.Save(project, x => nameof(x.State));
-            }
-            catch (ArgumentOutOfRangeException)
-            {
-                throw;
-            }
-            catch (KeyNotFoundException)
-            {
-                throw;
-            }
-            catch (DbUpdateConcurrencyException)
-            {
-                throw;
-            }
-            catch (DbUpdateException)
-            {
-                throw;
-            }
-            catch (SqlException)
-            {
-                throw;
-            }
-            catch (UpdateException)
-            {
-                throw;
-            }
-            catch (DbEntityValidationException)
-            {
-                throw;
-            }
-            catch (NotSupportedException)
-            {
-                throw;
-            }
-            catch (ObjectDisposedException)
-            {
-                throw;
-            }
-            catch (InvalidOperationException)
-            {
-                throw;
-            }
+            _projectsRepository.Save(project, x => nameof(x.State));
         }
 
         public T GetById<T>(int id) where T : ProjectBase
         {
-            IQueryable<Project> project;
+            var project = _projectsRepository.GetById(id);
+            var projectDto = Mapper.Map<T>(project);
 
-            try
-            {
-                project = _projectsRepository.GetById(id);
-            }
-            catch (SqlException)
-            {
-                throw;
-            }
-
-            IQueryable<T> projectDto;
-
-            try
-            {
-                projectDto = project.ProjectTo<T>();
-            }
-            catch (AutoMapperMappingException)
-            {
-                throw;
-            }
-
-            return projectDto.FirstOrDefault();
+            return projectDto;
         }
 
         public IEnumerable<T> GetFiltered<T>(ProjectGetFilteredArgs arguments) where T : ProjectBase
@@ -171,72 +61,10 @@ namespace OrganizerApp.BLL.BusinessDataManagers
                 throw new ArgumentNullException("Obiekt arguments musi mieć wartość różną od null");
             }
 
-            IQueryable<Project> projects;
+            var projects = _projectsRepository.GetFiltered(arguments);
+            var projectDtos = Mapper.Map<IEnumerable<T>>(projects);
 
-            try
-            {
-                projects = _projectsRepository.GetAll();
-            }
-            catch (SqlException)
-            {
-                throw;
-            }
-
-            switch(arguments.ProjectsType)
-            {
-                case ProjectType.Done:
-                    {
-                        projects = projects.Where(x => x.State == "done");
-                        break;
-                    }
-                case ProjectType.Deleted:
-                    {
-                        projects = projects.Where(x => x.State == "deleted");
-                        break;
-                    }
-                case ProjectType.Active:
-                    {
-                        projects = projects.Where(x => x.State == "todo")
-                                           .Where(x => x.ExecutionTime != "someday");
-                        break;  
-                    }
-                case ProjectType.Disactive:
-                    {
-                        projects = projects.Where(x => x.ExecutionTime == "someday")
-                                           .Where(x => x.State != "todo");
-                        break;
-                    }
-                default:
-                    {
-                        if (arguments.ProjectsType != ProjectType.All)
-                        {
-                            throw new ArgumentException("Argument projectsType przyjął nieprawidłową wartość (wartość po której nie mogę przefiltrować danych)");
-                        }
-                        break; 
-                    }
-            }
-
-
-            if (arguments.SearchPhrase != null)
-            {
-                projects = projects.Where(x =>
-                    x.Name.Contains(arguments.SearchPhrase) ||
-                    x.Description.Contains(arguments.SearchPhrase)
-                );
-            }
-
-            IQueryable<T> projectDtos;
-
-            try
-            {
-                projectDtos = projects.ProjectTo<T>();
-            }
-            catch (AutoMapperMappingException)
-            {
-                throw;
-            }
-
-            return projectDtos.ToList();
+            return projectDtos;
         }
 
         public void Remove(int id)
@@ -247,104 +75,13 @@ namespace OrganizerApp.BLL.BusinessDataManagers
                 State = "deleted"
             };
 
-            try
-            {
-                _projectsRepository.Save(project , x => nameof(x.State));
-            }
-            catch (ArgumentOutOfRangeException)
-            {
-                throw;
-            }
-            catch (KeyNotFoundException)
-            {
-                throw;
-            }
-            catch (DbUpdateConcurrencyException)
-            {
-                throw;
-            }
-            catch (DbUpdateException)
-            {
-                throw;
-            }
-            catch (SqlException)
-            {
-                throw;
-            }
-            catch (UpdateException)
-            {
-                throw;
-            }
-            catch (DbEntityValidationException)
-            {
-                throw;
-            }
-            catch (NotSupportedException)
-            {
-                throw;
-            }
-            catch (ObjectDisposedException)
-            {
-                throw;
-            }
-            catch (InvalidOperationException)
-            {
-                throw;
-            }
+            _projectsRepository.Save(project , x => nameof(x.State));
         }
 
         public void Save(ProjectDetail project)
         {
-            var projectEntity = AutoMapper.Mapper.Map<Project>(project);
-
-            try
-            {
-                _projectsRepository.Save(projectEntity);
-            }
-            catch (ArgumentNullException)
-            {
-                throw;
-            }
-            catch(ArgumentOutOfRangeException)
-            {
-                throw;
-            }
-            catch (KeyNotFoundException)
-            {
-                throw;
-            }
-            catch (DbUpdateConcurrencyException)
-            {
-                throw;
-            }
-            catch (DbUpdateException)
-            {
-                throw;
-            }
-            catch (SqlException)
-            {
-                throw;
-            }
-            catch (UpdateException)
-            {
-                throw;
-            }
-            catch (DbEntityValidationException)
-            {
-                throw;
-            }
-            catch (NotSupportedException)
-            {
-                throw;
-            }
-            catch (ObjectDisposedException)
-            {
-                throw;
-            }
-            catch (InvalidOperationException)
-            {
-                throw;
-            }
+            var projectEntity = Mapper.Map<Project>(project);
+            _projectsRepository.Save(projectEntity);
         }
     }
 }

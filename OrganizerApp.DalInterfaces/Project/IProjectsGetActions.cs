@@ -4,11 +4,12 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace OrganizerApp.DalInterfaces
+namespace OrganizerApp.DalInterfaces.Project
 {
-    public interface IGetActions <T , V>
+    public interface IProjectsGetActions <T , V , Z>
     {
         T GetById(int id);
-        V GetAll();
+        V GetFiltered(Z arguments);
     }
 }
+

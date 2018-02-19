@@ -2,18 +2,17 @@
 using System;
 using System.Data.SqlClient;
 using System.Collections.Generic;
-using System.Data.Entity.Infrastructure;
-using System.Data.Entity.Validation;
-using System.Data.Entity.Core;
-using System.Data.Entity.Migrations;
-using OrganizerApp.Dalnterfaces;
 using OrganizerApp.DalEntities.Entities;
 using OrganizerApp.DAL.Interfaces;
 using System.Data.Entity;
+using OrganizerApp.Helpers;
+using OrganizerApp.DalInterfaces;
+using OrganizerApp.DalInterfaces.Task;
+using OrganizerApp.DataCirculationHelpers;
 
 namespace OrganizerApp.DAL.Repositorys
 {
-    public class TasksRepository : IRepository<IQueryable<Task>, IQueryable<Task>, Task>
+    public class TasksRepository : ITasksRepository
     {
         private readonly AbstractDbContext _dbContext;
 
@@ -24,28 +23,89 @@ namespace OrganizerApp.DAL.Repositorys
         }
 
 
-        public IQueryable<Task> GetById(int id)
+        public Task GetById(int id)
         {
             try
             {
                 return _dbContext.Tasks
-                                 .Where(x => x.ID == id);
+                                 .Where(x => x.ID == id)
+                                 .FirstOrDefault();
             }
-            catch (SqlException)
+            finally
             {
-                throw;
+                _dbContext.Database.Connection.Close();
             }
         }
 
-        public IQueryable<Task> GetAll()
+        public IEnumerable<Task> GetFiltered(TaskGetFilteredArgs arguments)
         {
+            IQueryable<Task> tasksQuery = _dbContext.Tasks;
+
+            if (arguments.ProjectID != null)
+            {
+                tasksQuery = tasksQuery.Where(x => x.ProjectID == arguments.ProjectID);
+            }
+
+            switch (arguments.TasksType)
+            {
+                case TaskType.Done:
+                    {
+                        tasksQuery = tasksQuery.Where(x => x.State == "done");
+                        break;
+                    }
+                case TaskType.Deleted:
+                    {
+                        tasksQuery = tasksQuery.Where(x => x.State == "deleted");
+                        break;
+                    }
+                case TaskType.Active:
+                    {
+                        tasksQuery = tasksQuery.Where(x => x.State == "todo")
+                                     .Where(x => x.ExecutionTime != "someday" || x.ProjectID != null);
+                        break;
+                    }
+                case TaskType.Disactive:
+                    {
+                        tasksQuery = tasksQuery.Where(x => x.ProjectID == null)
+                                     .Where(x => x.ExecutionTime == "someday");
+                        break;
+                    }
+                default:
+                    {
+                        if (arguments.TasksType != TaskType.All)
+                        {
+                            throw new ArgumentException("Argument tasksType przyjął wartość po której nie mogę przefiltrować danych");
+                        }
+                        break;
+                    }
+            }
+
+            if (arguments.TimeType != null)
+            {
+                tasksQuery = tasksQuery.Where(x => x.ExecutionTime == arguments.TimeType);
+            }
+
+            if (arguments.SearchPhrase != null)
+            {
+                tasksQuery = tasksQuery.Where(x =>
+                    x.Name.Contains(arguments.SearchPhrase) ||
+                    x.Description.Contains(arguments.SearchPhrase)
+                );
+            }
+
+            if (arguments.Date != null)
+            {
+                tasksQuery = tasksQuery.Where(x => x.StartTime == arguments.Date);
+
+            }
+
             try
             {
-                return _dbContext.Tasks;
+                return tasksQuery.ToList();
             }
-            catch (SqlException)
+            finally
             {
-                throw;
+                _dbContext.Database.Connection.Close();
             }
         }
 
@@ -64,34 +124,6 @@ namespace OrganizerApp.DAL.Repositorys
             {
                 _dbContext.SaveChanges();
             }
-            catch (DbUpdateException)
-            {
-                throw;
-            }
-            catch (SqlException)
-            {
-                throw;
-            }
-            catch (UpdateException)
-            {
-                throw;
-            }
-            catch (DbEntityValidationException)
-            {
-                throw;
-            }
-            catch (NotSupportedException)
-            {
-                throw;
-            }
-            catch (ObjectDisposedException)
-            {
-                throw;
-            }
-            catch (InvalidOperationException)
-            {
-                throw;
-            }
             finally
             {
                 _dbContext.Database.Connection.Close();
@@ -104,61 +136,27 @@ namespace OrganizerApp.DAL.Repositorys
             {
                 throw new ArgumentNullException("Wartość encji musi być różna od null");
             }
+
             if (entity.ID == 0)
             {
                 _dbContext.Tasks.Add(entity);
             }
             else if (entity.ID < 0)
             {
-                throw new ArgumentOutOfRangeException("ID obiektu nie może być ujemne. Podane ID: " + entity.ID);
+                throw new ValidationException("ID obiektu nie może być ujemne. Podane ID: " + entity.ID);
             }
             else
             {
-                if (_dbContext.Tasks.Any(x => x.ID == entity.ID))
+                if (!_dbContext.Tasks.Any(x => x.ID == entity.ID))
                 {
-                    Update(entity, modifiedPropertyNames);
+                    throw new ValidationException("Próbujesz zaktualizować rekord, który nie istnieje. Nie znaleziono istniejącego rekordu o ID: " + entity.ID);
                 }
-                else
-                {
-                    throw new KeyNotFoundException("Próbujesz zaktualizować rekord, który nie istnieje. Nie znaleziono istniejącego rekordu o ID: " + entity.ID);
-                }
+                Update(entity, modifiedPropertyNames);
             }
 
             try
             {
                 _dbContext.SaveChanges();
-            }
-            catch (DbUpdateConcurrencyException)
-            {
-                throw;
-            }
-            catch (DbUpdateException)
-            {
-                throw;
-            }
-            catch (SqlException)
-            {
-                throw;
-            }
-            catch (UpdateException)
-            {
-                throw;
-            }
-            catch (DbEntityValidationException)
-            {
-                throw;
-            }
-            catch (NotSupportedException)
-            {
-                throw;
-            }
-            catch (ObjectDisposedException)
-            {
-                throw;
-            }
-            catch (InvalidOperationException)
-            {
-                throw;
             }
             finally
             {

@@ -207,7 +207,7 @@
     </Compile>
     <Compile Include="Infrastructure\Exceptions\ExceptionHandlers\Implementations\DbEntityValidationExceptionHandler.cs" />
     <Compile Include="Infrastructure\Exceptions\ExceptionHandlers\Implementations\UniversalExceptionHandler.cs" />
-    <Compile Include="Infrastructure\Exceptions\ExceptionHandlers\Implementations\ValidationExceptionHandler.cs" />
+    <Compile Include="Infrastructure\Exceptions\ExceptionHandlers\Implementations\FluentValidationExceptionHandler.cs" />
     <Compile Include="Infrastructure\Exceptions\TextErrorResult.cs" />
     <Compile Include="Infrastructure\Exceptions\ExceptionHandlers\Interfaces\IConcreteExceptionHandler.cs" />
     <Compile Include="Infrastructure\Exceptions\Messages.cs" />
@@ -216,6 +216,11 @@
     <Compile Include="Infrastructure\Validation\ProjectDetailValidator.cs" />
     <Compile Include="Infrastructure\Validation\TaskDetailValidator.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Resources\Languages\LocalizedText.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>LocalizedText.resx</DependentUpon>
+    </Compile>
   </ItemGroup>
   <ItemGroup>
     <Content Include="packages.config">
@@ -259,10 +264,20 @@
       <Project>{0b106bd8-1b18-4679-9081-768902c23fb1}</Project>
       <Name>OrganizerApp.DependencyComposer</Name>
     </ProjectReference>
+    <ProjectReference Include="..\OrganizerApp.Helpers\OrganizerApp.Helpers.csproj">
+      <Project>{f3dd59f6-d38b-43ef-a30d-b1b68d86daac}</Project>
+      <Name>OrganizerApp.Helpers</Name>
+    </ProjectReference>
     <ProjectReference Include="..\OrganizerApp.ValidationCommunications\OrganizerApp.ValidationCommunications.csproj">
       <Project>{6D719295-6F21-4E71-8252-FC62EBABC5DD}</Project>
       <Name>OrganizerApp.ValidationCommunications</Name>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Resources\Languages\LocalizedText.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>LocalizedText.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
   </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>

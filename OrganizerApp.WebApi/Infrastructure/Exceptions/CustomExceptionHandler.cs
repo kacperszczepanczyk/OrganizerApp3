@@ -1,6 +1,7 @@
 ﻿using FluentValidation;
 using OrganizerApp.WebApi.Infrastructure.Exceptions.ExceptionHandlers.Implementations;
 using OrganizerApp.WebApi.Infrastructure.Exceptions.ExceptionHandlers.Interfaces;
+using OrganizerApp.WebApi.Resources.Languages;
 using System;
 using System.Collections.Generic;
 using System.Data.Entity.Validation;
@@ -18,9 +19,14 @@ namespace OrganizerApp.WebApi.Infrastructure.Exceptions
             IConcreteExceptionHandler exceptionHandler = null;
             var exception = context.Exception;
 
-            if (exception is KeyNotFoundException || exception is ArgumentOutOfRangeException)
+            if (exception is Helpers.ValidationException)
             {
-                exceptionHandler = new UniversalExceptionHandler(context, context.Exception.Message, HttpStatusCode.BadRequest);
+                string message = new StringBuilder().Append(LocalizedText.ValidationFailedMainCommunicate)
+                                                    .Append(" \n")
+                                                    .Append(context.Exception.Message)
+                                                    .ToString();
+
+                exceptionHandler = new UniversalExceptionHandler(context, message, HttpStatusCode.BadRequest);
             }
             else if (context.Exception is DbEntityValidationException)
             {
@@ -28,7 +34,7 @@ namespace OrganizerApp.WebApi.Infrastructure.Exceptions
             }
             else if (context.Exception is ValidationException)
             {
-                exceptionHandler = new ValidationExceptionHandler(context);
+                exceptionHandler = new FluentValidationExceptionHandler(context);
             }
             else
             {

@@ -1,31 +1,21 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Data.Entity.Infrastructure;
-using System.Data.Entity.Validation;
-using System.Data.SqlClient;
-using System.Data.Entity.Core;
-using System.Collections;
-using AutoMapper.QueryableExtensions;
 using AutoMapper;
-using OrganizerApp.Dalnterfaces;
 using OrganizerApp.DalEntities.Entities;
 using OrganizerApp.BllDtos.Tasks;
 using OrganizerApp.BLL.Interfaces;
 using OrganizerApp.DataCirculationHelpers;
-using OrganizerApp.BLL.Helpers;
-using System.Data.Entity;
-using OrganizerApp.BLL.Helpers.FilterData;
+using OrganizerApp.DalInterfaces.Task;
 
 namespace OrganizerApp.BLL.BusinessDataManagers
 {
     public class TasksBusinessDataManager : ITasksBusinessDataManager
     {
-        private readonly IRepository<IQueryable<Task> , IQueryable<Task>, Task> _tasksRepository;
+        private readonly ITasksRepository _tasksRepository;
 
 
-        public TasksBusinessDataManager(IRepository<IQueryable<Task>, IQueryable<Task> , Task> tasksRepository)
+        public TasksBusinessDataManager(ITasksRepository tasksRepository)
         {
             _tasksRepository = tasksRepository;
         }
@@ -40,50 +30,8 @@ namespace OrganizerApp.BLL.BusinessDataManagers
                 StartTime = null
             };
 
-            try
-            {
-                _tasksRepository.Save(task , x => nameof(x.ExecutionTime) , x => nameof(x.StartTime));
-            }
-            catch (ArgumentOutOfRangeException)
-            {
-                throw;
-            }
-            catch (KeyNotFoundException)
-            {
-                throw;
-            }
-            catch (DbUpdateConcurrencyException)
-            {
-                throw;
-            }
-            catch (DbUpdateException)
-            {
-                throw;
-            }
-            catch (SqlException)
-            {
-                throw;
-            }
-            catch (UpdateException)
-            {
-                throw;
-            }
-            catch (DbEntityValidationException)
-            {
-                throw;
-            }
-            catch (NotSupportedException)
-            {
-                throw;
-            }
-            catch (ObjectDisposedException)
-            {
-                throw;
-            }
-            catch (InvalidOperationException)
-            {
-                throw;
-            }
+            _tasksRepository.Save(task , x => nameof(x.ExecutionTime) , x => nameof(x.StartTime));
+           
         }
 
         public void Done(int id)
@@ -94,78 +42,16 @@ namespace OrganizerApp.BLL.BusinessDataManagers
                 State = "done"
             };
 
-            try
-            {
-                _tasksRepository.Save(task, x => nameof(x.State));
-            }
-            catch (ArgumentOutOfRangeException)
-            {
-                throw;
-            }
-            catch (KeyNotFoundException)
-            {
-                throw;
-            }
-            catch (DbUpdateConcurrencyException)
-            {
-                throw;
-            }
-            catch (DbUpdateException)
-            {
-                throw;
-            }
-            catch (SqlException)
-            {
-                throw;
-            }
-            catch (UpdateException)
-            {
-                throw;
-            }
-            catch (DbEntityValidationException)
-            {
-                throw;
-            }
-            catch (NotSupportedException)
-            {
-                throw;
-            }
-            catch (ObjectDisposedException)
-            {
-                throw;
-            }
-            catch (InvalidOperationException)
-            {
-                throw;
-            }
+            _tasksRepository.Save(task, x => nameof(x.State));
         }
 
 
         public T GetById<T>(int id) where T : TaskBase
         {
-            IQueryable<Task> task;
+            var task = _tasksRepository.GetById(id);
+            var taskDto = Mapper.Map<T>(task);
 
-            try
-            {
-                task = _tasksRepository.GetById(id);
-            }
-            catch (SqlException)
-            {
-                throw;
-            }
-
-            IQueryable<T> taskDto;
-
-            try
-            {
-                taskDto = task.ProjectTo<T>();
-            }
-            catch (AutoMapperMappingException)
-            {
-                throw;
-            }
-
-            return taskDto.FirstOrDefault();
+            return taskDto;
         }
 
         public IEnumerable<T> GetFiltered<T>(TaskGetFilteredArgs arguments) where T : TaskBase
@@ -175,87 +61,10 @@ namespace OrganizerApp.BLL.BusinessDataManagers
                 throw new ArgumentNullException("Obiekt arguments musi mieć wartość różną od null");
             }
 
-            IQueryable<Task> tasks;
-
-            try
-            {
-                tasks = _tasksRepository.GetAll();
-            }
-            catch (SqlException)
-            {
-                throw;
-            }
-
-            if (arguments.ProjectID != null)
-            {
-                tasks = tasks.Where(x => x.ProjectID == arguments.ProjectID);
-            }
-
-            switch(arguments.TasksType)
-            {
-                case TaskType.Done:
-                    {
-                        tasks = tasks.Where(x => x.State == "done");
-                        break;
-                    }
-                case TaskType.Deleted:
-                    {
-                        tasks = tasks.Where(x => x.State == "deleted");
-                        break;
-                    }
-                case TaskType.Active:
-                    {
-                        tasks = tasks.Where(x => x.State == "todo")
-                                     .Where(x => x.ExecutionTime != "someday" || x.ProjectID != null);
-                        break;
-                    }
-                case TaskType.Disactive:
-                    {
-                        tasks = tasks.Where(x => x.ProjectID == null)
-                                     .Where(x => x.ExecutionTime == "someday");
-                        break;
-                    }
-                default:
-                    {
-                        if (arguments.TasksType != TaskType.All)
-                        {
-                            throw new ArgumentException("Argument tasksType przyjął wartość po której nie mogę przefiltrować danych");
-                        }
-                        break; 
-                    }
-            }
-
-            if (arguments.TimeType != null)
-            {
-                tasks = tasks.Where(x => x.ExecutionTime == arguments.TimeType);
-            }
-
-            if (arguments.SearchPhrase != null)
-            {
-                tasks = tasks.Where(x =>
-                    x.Name.Contains(arguments.SearchPhrase) || 
-                    x.Description.Contains(arguments.SearchPhrase)
-                );
-            }
-
-            if (arguments.Date != null)
-            {
-                tasks = tasks.Where(x => x.StartTime == arguments.Date);
-                
-            }
-
-            IQueryable<T> taskDtos;
-
-            try
-            {
-                taskDtos = tasks.ProjectTo<T>();
-            }
-            catch (AutoMapperMappingException)
-            {
-                throw;
-            }
+            var tasks = _tasksRepository.GetFiltered(arguments);
+            var taskDtos = Mapper.Map<IEnumerable<T>>(tasks);
             
-            return taskDtos.ToList();
+            return taskDtos;
         }
 
         public void Remove(int id)
@@ -266,104 +75,13 @@ namespace OrganizerApp.BLL.BusinessDataManagers
                 State = "deleted"
             };
 
-            try
-            {
-                _tasksRepository.Save(task, x => nameof(x.State));
-            }
-            catch (ArgumentOutOfRangeException)
-            {
-                throw;
-            }
-            catch (KeyNotFoundException)
-            {
-                throw;
-            }
-            catch (DbUpdateConcurrencyException)
-            {
-                throw;
-            }
-            catch (DbUpdateException)
-            {
-                throw;
-            }
-            catch (SqlException)
-            {
-                throw;
-            }
-            catch (UpdateException)
-            {
-                throw;
-            }
-            catch (DbEntityValidationException)
-            {
-                throw;
-            }
-            catch (NotSupportedException)
-            {
-                throw;
-            }
-            catch (ObjectDisposedException)
-            {
-                throw;
-            }
-            catch (InvalidOperationException)
-            {
-                throw;
-            }
+            _tasksRepository.Save(task, x => nameof(x.State));
         }
 
         public void Save(TaskDetail task)
         {
-            var taskEntity = AutoMapper.Mapper.Map<Task>(task);
-
-            try
-            {
-                _tasksRepository.Save(taskEntity);
-            }
-            catch(ArgumentNullException)
-            {
-                throw;
-            }
-            catch (ArgumentOutOfRangeException)
-            {
-                throw;
-            }
-            catch (KeyNotFoundException)
-            {
-                throw;
-            }
-            catch (DbUpdateConcurrencyException)
-            {
-                throw;
-            }
-            catch (DbUpdateException)
-            {
-                throw;
-            }
-            catch (SqlException)
-            {
-                throw;
-            }
-            catch (UpdateException)
-            {
-                throw;
-            }
-            catch (DbEntityValidationException)
-            {
-                throw;
-            }
-            catch (NotSupportedException)
-            {
-                throw;
-            }
-            catch (ObjectDisposedException)
-            {
-                throw;
-            }
-            catch (InvalidOperationException)
-            {
-                throw;
-            }
+            var taskEntity = Mapper.Map<Task>(task);
+            _tasksRepository.Save(taskEntity);
         }
     }
 }

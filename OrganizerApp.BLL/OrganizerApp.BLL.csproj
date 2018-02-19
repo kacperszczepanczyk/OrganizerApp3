@@ -55,8 +55,6 @@
   <ItemGroup>
     <Compile Include="BusinessDataManagers\ProjectsBusinessDataManager.cs" />
     <Compile Include="BusinessDataManagers\TasksBusinessDataManager.cs" />
-    <Compile Include="Helpers\FilterData\ProjectGetFilteredArgs.cs" />
-    <Compile Include="Helpers\FilterData\TaskGetFilteredArgs.cs" />
     <Compile Include="Infrastructure\AutoMapperBllConfig.cs" />
     <Compile Include="Interfaces\IProjectGetActions.cs" />
     <Compile Include="Interfaces\IProjectSetActions.cs" />

@@ -41,7 +41,9 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Helpers.cs" />
+    <Compile Include="ProjectGetFilteredArgs.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="TaskGetFilteredArgs.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

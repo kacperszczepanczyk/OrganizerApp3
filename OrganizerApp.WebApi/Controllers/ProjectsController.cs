@@ -4,7 +4,6 @@ using OrganizerApp.WebApi.Infrastructure.Validation;
 using OrganizerApp.BLL.Interfaces;
 using OrganizerApp.BllDtos.Projects;
 using FluentValidation;
-using OrganizerApp.BLL.Helpers.FilterData;
 using OrganizerApp.DataCirculationHelpers;
 using System.Net;
 

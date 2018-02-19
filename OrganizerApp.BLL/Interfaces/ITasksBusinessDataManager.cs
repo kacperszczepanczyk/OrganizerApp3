@@ -1,6 +1,5 @@
-﻿using OrganizerApp.BLL.Helpers.FilterData;
-using OrganizerApp.BllDtos.Tasks;
-using OrganizerApp.DalEntities.Entities;
+﻿using OrganizerApp.BllDtos.Tasks;
+using OrganizerApp.DataCirculationHelpers;
 
 namespace OrganizerApp.BLL.Interfaces
 {

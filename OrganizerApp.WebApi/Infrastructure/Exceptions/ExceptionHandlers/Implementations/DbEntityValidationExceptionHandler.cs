@@ -1,4 +1,5 @@
 ﻿using OrganizerApp.WebApi.Infrastructure.Exceptions.ExceptionHandlers.Interfaces;
+using OrganizerApp.WebApi.Resources.Languages;
 using System;
 using System.Collections.Generic;
 using System.Data.Entity.Validation;
@@ -22,7 +23,7 @@ namespace OrganizerApp.WebApi.Infrastructure.Exceptions.ExceptionHandlers.Implem
         public void Handle()
         {
             var ex = _exContext.Exception as DbEntityValidationException;
-            string customExcMsg = "Validation failed for one or more entities. Info below: ";
+            string customExcMsg = LocalizedText.ValidationFailedMainCommunicate;
             StringBuilder valExcInfo = new StringBuilder();
             if (ex != null)
             {
