@@ -9,6 +9,7 @@ using OrganizerApp.Helpers;
 using OrganizerApp.DalInterfaces;
 using OrganizerApp.DalInterfaces.Task;
 using OrganizerApp.DataCirculationHelpers;
+using System.Linq.Expressions;
 
 namespace OrganizerApp.DAL.Repositorys
 {
@@ -39,35 +40,35 @@ namespace OrganizerApp.DAL.Repositorys
 
         public IEnumerable<Task> GetFiltered(TaskGetFilteredArgs arguments)
         {
-            IQueryable<Task> tasksQuery = _dbContext.Tasks;
+            IQueryable<Task> query = _dbContext.Tasks;
 
             if (arguments.ProjectID != null)
             {
-                tasksQuery = tasksQuery.Where(x => x.ProjectID == arguments.ProjectID);
+                query = query.Where(x => x.ProjectID == arguments.ProjectID);
             }
 
             switch (arguments.TasksType)
             {
                 case TaskType.Done:
                     {
-                        tasksQuery = tasksQuery.Where(x => x.State == "done");
+                        query = query.Where(x => x.State == "done");
                         break;
                     }
                 case TaskType.Deleted:
                     {
-                        tasksQuery = tasksQuery.Where(x => x.State == "deleted");
+                        query = query.Where(x => x.State == "deleted");
                         break;
                     }
                 case TaskType.Active:
                     {
-                        tasksQuery = tasksQuery.Where(x => x.State == "todo")
-                                     .Where(x => x.ExecutionTime != "someday" || x.ProjectID != null);
+                        query = query.Where(x => x.State == "todo")
+                                               .Where(x => x.ExecutionTime != "someday" || x.ProjectID != null);
                         break;
                     }
                 case TaskType.Disactive:
                     {
-                        tasksQuery = tasksQuery.Where(x => x.ProjectID == null)
-                                     .Where(x => x.ExecutionTime == "someday");
+                        query = query.Where(x => x.ProjectID == null)
+                                               .Where(x => x.ExecutionTime == "someday");
                         break;
                     }
                 default:
@@ -82,12 +83,12 @@ namespace OrganizerApp.DAL.Repositorys
 
             if (arguments.TimeType != null)
             {
-                tasksQuery = tasksQuery.Where(x => x.ExecutionTime == arguments.TimeType);
+                query = query.Where(x => x.ExecutionTime == arguments.TimeType);
             }
 
             if (arguments.SearchPhrase != null)
             {
-                tasksQuery = tasksQuery.Where(x =>
+                query = query.Where(x =>
                     x.Name.Contains(arguments.SearchPhrase) ||
                     x.Description.Contains(arguments.SearchPhrase)
                 );
@@ -95,13 +96,13 @@ namespace OrganizerApp.DAL.Repositorys
 
             if (arguments.Date != null)
             {
-                tasksQuery = tasksQuery.Where(x => x.StartTime == arguments.Date);
+                query = query.Where(x => x.StartTime == arguments.Date);
 
             }
 
             try
             {
-                return tasksQuery.ToList();
+                return query.ToList();
             }
             finally
             {
@@ -147,7 +148,8 @@ namespace OrganizerApp.DAL.Repositorys
             }
             else
             {
-                if (!_dbContext.Tasks.Any(x => x.ID == entity.ID))
+                bool isRecordExistsInDb = _dbContext.Tasks.Any(x => x.ID == entity.ID);
+                if (!isRecordExistsInDb)
                 {
                     throw new ValidationException("Próbujesz zaktualizować rekord, który nie istnieje. Nie znaleziono istniejącego rekordu o ID: " + entity.ID);
                 }

@@ -12,6 +12,7 @@ using OrganizerApp.Helpers;
 using OrganizerApp.DalInterfaces;
 using OrganizerApp.DalInterfaces.Project;
 using OrganizerApp.DataCirculationHelpers;
+using System.Linq.Expressions;
 
 namespace OrganizerApp.DAL.Repositorys
 {
@@ -43,29 +44,29 @@ namespace OrganizerApp.DAL.Repositorys
 
         public IEnumerable<Project> GetFiltered(ProjectGetFilteredArgs arguments)
         {
-            IQueryable<Project> projectsQuery = _dbContext.Projects.Include(x => x.ProjectTasks);
+            IQueryable<Project> query = _dbContext.Projects.Include(x => x.ProjectTasks);
 
             switch (arguments.ProjectsType)
             {
                 case ProjectType.Done:
                     {
-                        projectsQuery = projectsQuery.Where(x => x.State == "done");
+                        query = query.Where(x => x.State == "done");
                         break;
                     }
                 case ProjectType.Deleted:
                     {
-                        projectsQuery = projectsQuery.Where(x => x.State == "deleted");
+                        query = query.Where(x => x.State == "deleted");
                         break;
                     }
                 case ProjectType.Active:
                     {
-                        projectsQuery = projectsQuery.Where(x => x.State == "todo")
+                        query = query.Where(x => x.State == "todo")
                                            .Where(x => x.ExecutionTime != "someday");
                         break;
                     }
                 case ProjectType.Disactive:
                     {
-                        projectsQuery = projectsQuery.Where(x => x.ExecutionTime == "someday")
+                        query = query.Where(x => x.ExecutionTime == "someday")
                                            .Where(x => x.State != "todo");
                         break;
                     }
@@ -79,19 +80,17 @@ namespace OrganizerApp.DAL.Repositorys
                     }
             }
 
-
             if (arguments.SearchPhrase != null)
             {
-                projectsQuery = projectsQuery.Where(x =>
+                query = query.Where(x =>
                     x.Name.Contains(arguments.SearchPhrase) ||
                     x.Description.Contains(arguments.SearchPhrase)
                 );
             }
 
-
             try
             {
-                return projectsQuery.ToList();
+                return query.ToList();
             }
             finally
             {
@@ -135,7 +134,8 @@ namespace OrganizerApp.DAL.Repositorys
             }
             else
             {
-                if (!_dbContext.Projects.Any(x => x.ID == entity.ID))
+                bool isRecordExistsInDb = _dbContext.Projects.Any(x => x.ID == entity.ID);
+                if (!isRecordExistsInDb)
                 {
                     throw new ValidationException("Próbujesz zaktualizować rekord, który nie istnieje. Nie znaleziono istniejącego rekordu o ID: " + entity.ID);
                 }

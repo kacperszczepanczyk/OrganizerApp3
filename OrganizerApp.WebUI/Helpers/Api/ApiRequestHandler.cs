@@ -24,15 +24,6 @@ namespace OrganizerApp.WebUI.Helpers.Api
         }
 
 
-        private void ConfigureClient(string baseUri)
-        {
-            _defaultClient.AddHandler("application/json", NewtonsoftJsonSerializer.Default);
-            _defaultClient.AddHandler("text/json", NewtonsoftJsonSerializer.Default);
-            _defaultClient.AddHandler("text/x-json", NewtonsoftJsonSerializer.Default);
-            _defaultClient.AddHandler("text/javascript", NewtonsoftJsonSerializer.Default);
-            _defaultClient.AddHandler("*+json", NewtonsoftJsonSerializer.Default);
-        }
-
         public async Task<T> ExecuteGetAsync<T>(string resourceUri, NameValueCollection parameters = null) where T : new()
         {
             if (String.IsNullOrWhiteSpace(resourceUri)) { throw new ArgumentException("Niepoprawna wartośc argumentu. Argument \"resourceUri\" nie może być null'em, pustym stringiem, lub zawierać samych białych spacji"); }
@@ -83,6 +74,15 @@ namespace OrganizerApp.WebUI.Helpers.Api
             {
                 throw new ExternalDataCirculationException("Wysłanie danych do zewnętrznego dostawcy zakończyło się niepowodzeniem. Sprawdź wewnętrzny wyjątek, aby dowiedzieć się więcej.", response.ErrorException);
             }
+        }
+
+        private void ConfigureClient(string baseUri)
+        {
+            _defaultClient.AddHandler("application/json", NewtonsoftJsonSerializer.Default);
+            _defaultClient.AddHandler("text/json", NewtonsoftJsonSerializer.Default);
+            _defaultClient.AddHandler("text/x-json", NewtonsoftJsonSerializer.Default);
+            _defaultClient.AddHandler("text/javascript", NewtonsoftJsonSerializer.Default);
+            _defaultClient.AddHandler("*+json", NewtonsoftJsonSerializer.Default);
         }
     }
 }
